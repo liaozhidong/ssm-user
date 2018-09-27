@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:mvc="http://www.springframework.org/schema/mvc"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://www.springframework.org/schema/context
+      http://www.springframework.org/schema/context/spring-context.xsd
+      http://www.springframework.org/schema/mvc
+      http://www.springframework.org/schema/mvc/spring-mvc-3.0.xsd">
+
+    <!--扫描web相关的bean-->
+    <context:component-scan base-package="com.spring.controller"/>
+    <context:component-scan base-package="com.spring.inteceptor"/>
+
+    <!--开启SpringMVC注解模式-->
+    <mvc:annotation-driven conversion-service="conversionService"/>
+
+    <!--开启静态资源模式-->
+    <mvc:default-servlet-handler/>
+
+    <!--spring controller 返回处理定义的json 和 jsp 处理-->
+    <bean class="org.springframework.web.servlet.view.BeanNameViewResolver"/>
+
+    <!--配置jsp 显示ViewResolver(视图解析器)-->
+    <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+    <property name="viewClass" value="org.springframework.web.servlet.view.JstlView"/>
+    <property name="prefix" value="/WEB-INF/views/"/>
+    <property name="suffix" value=".jsp"/>
+</bean>
+
+    <!--配置转换器 即自定义参数绑定-->
+    <!--<bean id="conversionServer" class="org.springframework.format.support.FormattingConversionServiceFactoryBean">-->
+        <!--&lt;!&ndash;日期转换器&ndash;&gt;-->
+        <!--<property name="converters">-->
+            <!--<list>-->
+                <!--<bean class="com.spring.converter.DateConverter"/>-->
+            <!--</list>-->
+        <!--</property>-->
+    <!--</bean>-->
+
+    <!--<bean id="dateConvert" class="com.spring.converter.DateConvertTwo"/>-->
+
+    <!--<bean id="conversionService" class="org.springframework.format.support.FormattingConversionServiceFactoryBean">-->
+        <!--<property name="formatters">-->
+            <!--<set>-->
+                <!--<ref bean="dateConvert"></ref>-->
+            <!--</set>-->
+        <!--</property>-->
+    <!--</bean>-->
+
+
+    <!--文件上传解析器-->
+   <bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver"/>
+
+    <!--时间配置器-->
+    <bean id="conversionService" class="org.springframework.context.support.ConversionServiceFactoryBean">
+        <property name="converters">
+            <list>
+                <bean class="com.spring.converter.DateConverter"/>
+            </list>
+        </property>
+    </bean>
+
+    <!-- 全局异常处理 -->
+    <!--<bean-->
+            <!--class="org.springframework.web.servlet.handler.SimpleMappingExceptionResolver">-->
+        <!--&lt;!&ndash; 定义默认的异常处理页面，当该异常类型的注册时使用 &ndash;&gt;-->
+        <!--<property name="defaultErrorView" value="error"></property>-->
+        <!--&lt;!&ndash; 定义异常处理页面用来获取异常信息的变量名，默认名为exception &ndash;&gt;-->
+        <!--<property name="exceptionAttribute" value="ex"></property>-->
+        <!--&lt;!&ndash; 定义需要特殊处理的异常，用类名或完全路径名作为key，异常也页名作为值 &ndash;&gt;-->
+        <!--<property name="exceptionMappings">-->
+            <!--<props>-->
+                <!--<prop key="java.lang.Exception">error</prop>-->
+            <!--</props>-->
+        <!--</property>-->
+    <!--</bean>-->
+
+    <!--拦截器-->
+    <mvc:interceptors>
+        <mvc:interceptor>
+            <mvc:mapping path="/**"/>
+            <bean class="com.spring.inteceptor.LoginIncetepor"></bean>
+        </mvc:interceptor>
+    </mvc:interceptors>
+</beans>
